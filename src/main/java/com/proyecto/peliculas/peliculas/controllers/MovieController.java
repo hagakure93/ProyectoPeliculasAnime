@@ -75,7 +75,7 @@ public class MovieController {
     }
 
     @CrossOrigin
-    @GetMapping("/vote/{id}/{rating}")
+    @PutMapping("/vote/{id}/{rating}")
     public ResponseEntity<Movie> voteMovie(@PathVariable Long id, @PathVariable double rating) {
         if (!movieRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
