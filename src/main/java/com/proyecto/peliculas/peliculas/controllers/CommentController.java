@@ -25,11 +25,10 @@ import com.proyecto.peliculas.peliculas.repositories.MovieRepository;
 @CrossOrigin
 public class CommentController {
 
-    // Inyecta los repositorios necesarios
     @Autowired
     private CommentRepository commentRepository;
 
-    @Autowired // Necesitas el repositorio de peliculas para asociar los comentarios
+    @Autowired
     private MovieRepository movieRepository;
 
     // --- Metodos del Controlador (Endpoints) ---
@@ -43,22 +42,16 @@ public class CommentController {
      */
     @GetMapping
     public ResponseEntity<List<Comment>> getCommentsByMovie(@PathVariable Long movieId) {
-        // 1. Verifica si la pelicula con el ID dado existe en la base de datos
+
         Optional<Movie> optionalMovie = movieRepository.findById(movieId);
 
-        // 2. Si la pelicula no se encuentra, devuelve una respuesta 404 Not Found
         if (optionalMovie.isEmpty()) {
             return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
         }
 
-        // 3. Si la pelicula existe, busca todos los comentarios asociados a ese ID de
-        // pelicula
         List<Comment> comments = commentRepository.findByMovieId(movieId);
 
-        // 4. Devuelve una respuesta 200 OK con la lista de comentarios encontrados
-        // La lista puede estar vacia si la pelicula no tiene comentarios, lo cual es
-        // una respuesta valida 200 OK.
-        return ResponseEntity.ok(comments); // Devuelve 200 OK con el cuerpo de la respuesta (la lista de comentarios)
+        return ResponseEntity.ok(comments);
     }
 
     /**
@@ -71,33 +64,21 @@ public class CommentController {
     // @RequestBody le dice a Spring que lea el cuerpo de la peticion (el JSON) y lo
     // convierta a un objeto Comment
     public ResponseEntity<Comment> createCommentForMovie(@PathVariable Long movieId, @RequestBody Comment comment) {
-        // 1. Busca la pelicula a la que se añadira el comentario
+
         Optional<Movie> optionalMovie = movieRepository.findById(movieId);
 
-        // 2. Si la pelicula no se encuentra, devuelve una respuesta 404 Not Found
         if (optionalMovie.isEmpty()) {
-            return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
+            return ResponseEntity.notFound().build();
         }
 
-        Movie movie = optionalMovie.get(); // Obtiene el objeto Movie si esta presente
+        Movie movie = optionalMovie.get();
 
         // 3. Asocia el comentario a la pelicula encontrada
-        // Esto establece la relacion ManyToOne en el lado del comentario
+
         comment.setMovie(movie);
 
-        // Opcional pero recomendado: Establecer la fecha/hora del comentario en el
-        // servidor
-        // para asegurar que es la hora de creacion y no depende del cliente.
-        // Asegurate de importar java.time.LocalDateTime y manejarlo en tu entidad
-        // Comment.
-        // comment.setTimestamp(LocalDateTime.now());
-
-        // 4. Guarda el comentario en la base de datos utilizando el repositorio de
-        // comentarios
         Comment savedComment = commentRepository.save(comment);
 
-        // 5. Devuelve una respuesta 201 Created con el comentario guardado en el
-        // cuerpo.
         return ResponseEntity.status(HttpStatus.CREATED).body(savedComment); // Devuelve 201 Created
     }
 
@@ -110,29 +91,20 @@ public class CommentController {
      */
     @DeleteMapping("/{commentId}") // Mapea a DELETE /api/movies/{movieId}/comments/ID_COMENTARIO
     public ResponseEntity<Void> deleteComment(@PathVariable Long movieId, @PathVariable Long commentId) {
-        // 1. No necesitamos buscar la pelicula directamente aqui para la eliminacion,
-        // pero si necesitamos buscar el comentario y verificar su relacion.
 
         // 2. Busca el comentario por su ID
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
-        // 3. Si el comentario no se encuentra, devuelve 404 Not Found.
         if (optionalComment.isEmpty()) {
-            return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
+            return ResponseEntity.notFound().build();
         }
 
-        Comment comment = optionalComment.get(); // Obtiene el objeto Comment si esta presente
+        Comment comment = optionalComment.get();
 
-        // 4. Verifica que el comentario encontrado realmente pertenece a la pelicula
-        // especificada en la URL.
-        // Esto es una capa extra de seguridad y validacion de la URL.
         // Comprueba si la pelicula asociada al comentario NO TIENE el ID de la pelicula
         // de la URL.
         if (!comment.getMovie().getId().equals(movieId)) {
-            // Si no pertenece a esa pelicula, lo tratamos como si el recurso (comentario
-            // bajo esa peli) no existiera.
-            // Podrias considerar un 403 Forbidden si el comentario existe pero el usuario
-            // no tiene permiso o no pertenece a esa peli.
+
             return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
         }
 
@@ -140,9 +112,7 @@ public class CommentController {
         // eliminarlo.
         commentRepository.deleteById(commentId);
 
-        // 6. Devuelve una respuesta 204 No Content para indicar que la eliminacion fue
-        // exitosa y no hay contenido que devolver.
-        return ResponseEntity.noContent().build(); // Devuelve 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
 }
