@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.peliculas.peliculas.models.Movie;
@@ -91,6 +92,22 @@ public class MovieController {
         Movie savedMovie = movieRepository.save(movie);
         return ResponseEntity.ok(savedMovie);
 
+    }
+
+    @CrossOrigin 
+    @GetMapping("/search") 
+    // @RequestParam extrae el valor del parametro de la URL (ej: ?title=valor)
+    public ResponseEntity<List<Movie>> searchMoviesByTitle(@RequestParam String title) {
+
+        // Llama al nuevo metodo del repositorio para buscar por titulo
+        List<Movie> movies = movieRepository.findByTitle(title);
+        // Si usaste la opcion 'ContainingIgnoreCase':
+        // List<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(title);
+
+        // Devuelve la lista de peliculas encontradas.
+        // Si no se encuentra ninguna, la lista estara vacia, lo cual es un 200 OK
+        // valido con cuerpo vacio [].
+        return ResponseEntity.ok(movies); // Devuelve 200 OK con la lista de peliculas (puede estar vacia)
     }
 
 }
