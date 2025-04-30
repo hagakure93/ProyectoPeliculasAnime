@@ -1,5 +1,6 @@
 package com.proyecto.peliculas.peliculas.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proyecto.peliculas.peliculas.DTOs.MovieListViewDto;
 import com.proyecto.peliculas.peliculas.models.Movie;
 import com.proyecto.peliculas.peliculas.repositories.MovieRepository;
 
@@ -30,13 +32,17 @@ public class MovieController {
     // El getMapping no lleva ninguna URL así que el get es api/movies
     @CrossOrigin
     @GetMapping
-    public List<Movie> getAllMovies() {
+    public List<MovieListViewDto> getAllMovies() {
 
-        /*
-         * Gracias al ORM de Hibernate tengo todos los métodos para trabajar con la BD
-         * sin utilizar consultas SQL
-         */
-        return movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll();
+
+        List<MovieListViewDto> dtoList = new ArrayList<>();
+
+        for (Movie movie : movies) {
+            dtoList.add(MovieListViewDto.fromEntity(movie));
+        }
+
+        return dtoList;
 
     }
 
