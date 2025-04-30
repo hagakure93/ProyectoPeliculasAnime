@@ -78,24 +78,50 @@ public class MovieController {
     @CrossOrigin
     @PutMapping("/vote/{id}/{rating}")
     public ResponseEntity<Movie> voteMovie(@PathVariable Long id, @PathVariable double rating) {
+
         if (!movieRepository.existsById(id)) {
+
             return ResponseEntity.notFound().build();
         }
 
         Optional<Movie> optional = movieRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
         Movie movie = optional.get();
-        double newRating = ((movie.getVotes() * movie.getRating()) / (movie.getVotes() + 1));
 
-        movie.setVotes(movie.getVotes() + 1);
-        movie.setRating(newRating);
+        // --- LÓGICA DE CÁLCULO DE LA CALIFICACIÓN MEDIA ACUMULADA ---
 
+        // Calcula la suma total de puntos de votos anteriores.
+
+        double totalRatingsSum = movie.getRating() * movie.getVotes();
+
+        // Obtiene la cantidad de votos anteriores.
+        int totalVotesCount = movie.getVotes();
+
+        // Calcular la nueva suma total de puntos, añadiendo el valor del voto actual
+        // ('rating' recibido).
+        double newTotalRatingsSum = totalRatingsSum + rating;
+
+        // Calcular la nueva cantidad total de votos, incrementando en 1.
+        int newTotalVotesCount = totalVotesCount + 1;
+
+        double newAverageRating = newTotalVotesCount > 0 ? (newTotalRatingsSum / newTotalVotesCount) : 0.0;
+
+        // 5. Actualizar los campos de la pelicula con los nuevos valores calculados.
+        movie.setVotes(newTotalVotesCount);
+        movie.setRating(newAverageRating);
+
+        // 6. Guarda la pelicula actualizada en la base de datos.
         Movie savedMovie = movieRepository.save(movie);
-        return ResponseEntity.ok(savedMovie);
 
+        return ResponseEntity.ok(savedMovie);
     }
 
-    @CrossOrigin 
-    @GetMapping("/search") 
+    @CrossOrigin
+    @GetMapping("/search")
     // @RequestParam extrae el valor del parametro de la URL (ej: ?title=valor)
     public ResponseEntity<List<Movie>> searchMoviesByTitle(@RequestParam String title) {
 
@@ -108,6 +134,18 @@ public class MovieController {
         // Si no se encuentra ninguna, la lista estara vacia, lo cual es un 200 OK
         // valido con cuerpo vacio [].
         return ResponseEntity.ok(movies); // Devuelve 200 OK con la lista de peliculas (puede estar vacia)
+    }
+
+    /**
+     * POST /api/movies/bulk
+     * Añade una lista de peliculas a la base de datos.
+     * Espera un array JSON de objetos Movie en el body.
+     */
+    @PostMapping("/bulk") // Un nuevo endpoint para carga masiva
+    public ResponseEntity<List<Movie>> addMovies(@RequestBody List<Movie> movies) {
+
+        List<Movie> savedMovies = movieRepository.saveAll(movies);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedMovies);
     }
 
 }
