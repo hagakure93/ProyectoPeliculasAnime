@@ -47,6 +47,7 @@ public class CommentController {
 
         if (optionalMovie.isEmpty()) {
             return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
+
         }
 
         List<Comment> comments = commentRepository.findByMovieId(movieId);
