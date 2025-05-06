@@ -1,11 +1,5 @@
 # Movie API - Spring Boot Backend
 
-![GitHub last commit](https://img.shields.io/github/last-commit/hagakure93/ProyectoPeliculasAnime)
-![GitHub contributors](https://imgshields.io/github/contributors/hagakure93/ProyectoPeliculasAnime)
-![GitHub issues](https://imgshields.io/github/issues/hagakure93/ProyectoPeliculasAnime)
-![GitHub pull requests](https://imgshields.io/github/issues-pr/hagakure93/ProyectoPeliculasAnime)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) ## Overview
-
 This project provides a robust RESTful API for managing a collection of movies. It's built using the latest Spring Boot framework and follows standard practices for backend development.
 
 **Note:** This repository currently contains only the backend API code. It does **not** include a graphical user interface (frontend).
