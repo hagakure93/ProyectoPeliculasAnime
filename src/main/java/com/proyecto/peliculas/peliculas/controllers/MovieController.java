@@ -133,8 +133,7 @@ public class MovieController {
 
         // Llama al nuevo metodo del repositorio para buscar por titulo
         List<Movie> movies = movieRepository.findByTitle(title);
-        // Si usaste la opcion 'ContainingIgnoreCase':
-        // List<Movie> movies = movieRepository.findByTitleContainingIgnoreCase(title);
+        
 
         // Devuelve la lista de peliculas encontradas.
         // Si no se encuentra ninguna, la lista estara vacia, lo cual es un 200 OK

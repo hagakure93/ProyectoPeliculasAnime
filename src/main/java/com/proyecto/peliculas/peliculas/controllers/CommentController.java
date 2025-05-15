@@ -37,8 +37,7 @@ public class CommentController {
      * GET /api/movies/{movieId}/comments
      * Obtiene todos los comentarios para una pelicula especifica.
      * Devuelve 404 Not Found si la pelicula no existe.
-     * Devuelve 200 OK con una lista (posiblemente vacia) de comentarios si la
-     * pelicula existe.
+     * Devuelve 200 OK si la pelicula existe.
      */
     @GetMapping
     public ResponseEntity<List<Comment>> getCommentsByMovie(@PathVariable Long movieId) {
@@ -59,7 +58,7 @@ public class CommentController {
      * POST /api/movies/{movieId}/comments
      * Añade un nuevo comentario a una pelicula especifica.
      * Devuelve 404 Not Found si la pelicula no existe.
-     * Devuelve 201 Created si el comentario se crea exitosamente.
+     * Devuelve 201 Created si el comentario se crea exitosamente
      */
     @PostMapping
     // @RequestBody le dice a Spring que lea el cuerpo de la peticion (el JSON) y lo

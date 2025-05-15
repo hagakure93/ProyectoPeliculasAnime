@@ -38,8 +38,8 @@ public class Movie {
     
     // Una pelicula tiene muchos comentarios
     @OneToMany(mappedBy = "movie", 
-            cascade = CascadeType.ALL, //  Si borras la pelicula, se borran los comentarios
-            orphanRemoval = true, //Si quitas un comentario de la lista, se borra
+            cascade = CascadeType.ALL, //  Si borro la pelicula, se borran los comentarios
+            orphanRemoval = true, //Si quito un comentario de la lista, se borra
             fetch = FetchType.LAZY) // Carga perezosa
     @JsonManagedReference // Anotacion de Jackson: Este es el lado "manager" de la relacion para JSON
     private List<Comment> comments = new ArrayList<>(); // Inicializar la lista (buena practica)

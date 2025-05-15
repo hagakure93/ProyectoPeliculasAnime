@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MovieListViewDto {
-    // Incluye solo los campos que quieres mostrar en la lista de peliculas
+    // Incluye solo los campos que quiero mostrar en la lista de peliculas
     private Long id;
     private String title;
     private String description;
@@ -16,7 +16,7 @@ public class MovieListViewDto {
     private Double rating;
     private String imageUrl;
 
-    // Constructor vacio (necesario para Jackson y Spring)
+     
     public MovieListViewDto() {
     }
 
