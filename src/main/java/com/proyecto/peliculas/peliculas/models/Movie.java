@@ -42,7 +42,7 @@ public class Movie {
             orphanRemoval = true, //Si quito un comentario de la lista, se borra
             fetch = FetchType.LAZY) // Carga perezosa
     @JsonManagedReference // Anotacion de Jackson: Este es el lado "manager" de la relacion para JSON
-    private List<Comment> comments = new ArrayList<>(); // Inicializar la lista (buena practica)
+    private List<Comment> comments = new ArrayList<>(); // Inicializar la lista 
 
 
     public void addComment(Comment comment) {
