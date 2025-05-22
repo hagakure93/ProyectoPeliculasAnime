@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MovieListViewDto {
-    // Incluye solo los campos que quiero mostrar en la lista de peliculas
+    
     private Long id;
     private String title;
     private String description;
@@ -20,7 +20,7 @@ public class MovieListViewDto {
     public MovieListViewDto() {
     }
 
-    // Constructor o metodo estatico para convertir una entidad Movie a este DTO
+    // Constructor para convertir una entidad Movie a este DTO
     public static MovieListViewDto fromEntity(Movie movie) {
         MovieListViewDto dto = new MovieListViewDto();
         dto.setId(movie.getId());
