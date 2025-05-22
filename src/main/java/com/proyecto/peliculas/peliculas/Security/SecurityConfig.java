@@ -11,8 +11,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request.requestMatchers("/api/movies/**").permitAll())
-                .csrf(csrf -> csrf.disable());
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers(
+                    "/static/**",
+                    "/index.html",
+                    "/",
+                    "/*.css",
+                    "/*.js",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/favicon.ico"
+                ).permitAll()
+                .requestMatchers("/api/movies/**").permitAll()
+        )
+        .csrf(csrf -> csrf.disable());
         return http.build();
     }
 
