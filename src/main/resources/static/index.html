@@ -2,44 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Anime Ranking</title>
+    <title>Manga Ranking</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Anime Ranking</h1>
-        <div class="grid" id="animeGrid">
-            <!-- Cada grid-item debe tener data-* con info de la película -->
-            <div class="grid-item" data-title="Anime 1" data-description="Descripción de Anime 1" data-id="1">
-                <img src="..." alt="Anime 1">
-            </div>
-            <div class="grid-item" data-title="Anime 2" data-description="Descripción de Anime 2" data-id="2">
-                <img src="https://placehold.co/200x300?text=Anime+2" alt="Anime 2">
-            </div>
-            <div class="grid-item" data-title="Anime 3" data-description="Descripción de Anime 3" data-id="3">
-                <img src="https://placehold.co/200x300?text=Anime+3" alt="Anime 3">
-            </div>
-            <div class="grid-item" data-title="Anime 4" data-description="Descripción de Anime 4" data-id="4">
-                <img src="https://placehold.co/200x300?text=Anime+4" alt="Anime 4">
-            </div>
-            <div class="grid-item" data-title="Anime 5" data-description="Descripción de Anime 5" data-id="5">
-                <img src="https://placehold.co/200x300?text=Anime+5" alt="Anime 5">
-            </div>
-            <div class="grid-item" data-title="Anime 6" data-description="Descripción de Anime 6" data-id="6">
-                <img src="https://placehold.co/200x300?text=Anime+6" alt="Anime 6">
-            </div>
-        </div>
+        <h1>Manga Ranking</h1>
+        <div class="grid" id="animeGrid"></div>
         <div id="detailView" class="hidden">
             <div id="detailImage"></div>
             <div id="detailInfo">
                 <h2 id="detailTitle"></h2>
                 <p id="detailDescription"></p>
                 <button id="showCommentsBtn">Ver comentarios</button>
+                <button id="closeDetailBtn">Cerrar</button>
             </div>
         </div>
         <div id="commentsView" class="hidden">
             <h3>Comentarios</h3>
             <div id="commentsList"></div>
+            <form id="addCommentForm">
+                <input type="text" id="commentInput" placeholder="Escribe un comentario..." required>
+                <button type="submit">Añadir</button>
+            </form>
             <button id="closeCommentsBtn">Cerrar comentarios</button>
         </div>
     </div>

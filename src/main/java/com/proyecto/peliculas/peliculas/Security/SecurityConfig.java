@@ -23,7 +23,7 @@ public class SecurityConfig {
                     "/images/**",
                     "/favicon.ico"
                 ).permitAll()
-                .requestMatchers("/api/movies/**").permitAll()
+                .requestMatchers("/api/movies/**", "/api/mangas", "/api/mangas/**").permitAll()
         )
         .csrf(csrf -> csrf.disable());
         return http.build();

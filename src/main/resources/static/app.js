@@ -8,68 +8,91 @@ document.addEventListener('DOMContentLoaded', () => {
     const commentsView = document.getElementById('commentsView');
     const commentsList = document.getElementById('commentsList');
     const closeCommentsBtn = document.getElementById('closeCommentsBtn');
+    const closeDetailBtn = document.getElementById('closeDetailBtn');
+    const addCommentForm = document.getElementById('addCommentForm');
+    const commentInput = document.getElementById('commentInput');
 
-    let currentAnimeId = null;
+    let mangas = [];
 
-    // Mostrar detalle al hacer click en una portada
-    grid.addEventListener('click', (e) => {
-        const item = e.target.closest('.grid-item');
-        if (!item) return;
+    // 1. Obtener los datos desde la API REST
+    fetch('/api/movies')
+        .then(response => response.json())
+        .then(data => {
+            mangas = data;
+            renderMangas();
+        })
+        .catch(error => {
+            grid.innerHTML = "<p style='color:red'>Error cargando mangas.</p>";
+            console.error(error);
+        });
 
-        // Agranda la imagen y muestra detalles
-        const imgSrc = item.querySelector('img').src;
-        detailImage.innerHTML = `<img src="${imgSrc}" alt="${item.dataset.title}">`;
-        detailTitle.textContent = item.dataset.title;
-        detailDescription.textContent = item.dataset.description;
-        detailView.classList.remove('hidden');
-        currentAnimeId = item.dataset.id;
+    // 2. Renderizar los mangas
+    function renderMangas() {
+        grid.innerHTML = '';
+        mangas.forEach(manga => {
+            const div = document.createElement('div');
+            div.className = 'grid-item';
+            const img = document.createElement('img');
+            img.src = manga.imageUrl;
+            img.alt = manga.title;
+            img.setAttribute('data-id', manga.id);
+            img.className = 'manga-img';
+            img.addEventListener('click', function() {
+                detailImage.innerHTML = `<img src="${manga.imageUrl}" alt="${manga.title}">`;
+                detailTitle.textContent = manga.title;
+                detailDescription.textContent = manga.description;
+                detailView.classList.remove('hidden');
+                showCommentsBtn.setAttribute('data-id', manga.id);
+            });
+            div.appendChild(img);
+            grid.appendChild(div);
+        });
+    }
+
+    // 3. Cerrar detalles
+    closeDetailBtn.addEventListener('click', function() {
+        detailView.classList.add('hidden');
     });
 
-    // Mostrar comentarios al pulsar el botón
-    showCommentsBtn.addEventListener('click', () => {
-        detailView.classList.add('hidden');
-        commentsView.classList.remove('hidden');
-        commentsList.innerHTML = '<div>Cargando comentarios...</div>';
-
-        // Petición AJAX a tu API para obtener los comentarios reales
-        fetch(`/api/movies/${currentAnimeId}/comments`, {
-            headers: {
-                'Authorization': 'Basic ' + btoa('hagakure:nuevamysqlclavE6.')
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error('Error al cargar comentarios');
-                return res.json();
-            })
+    // 4. Mostrar comentarios (si tu API los devuelve, si no, puedes hacer otro fetch aquí)
+    showCommentsBtn.addEventListener('click', function() {
+        const movieId = this.getAttribute('data-id');
+        fetch(`/api/movies/${movieId}/comments`)
+            .then(response => response.json())
             .then(comments => {
-                if (comments.length === 0) {
-                    commentsList.innerHTML = '<div>No hay comentarios aún.</div>';
-                } else {
-                    commentsList.innerHTML = comments.map(c =>
-                        `<div class="comment">
-                            <strong>${c.author ? c.author : 'Anónimo'}:</strong>
-                            <span>${c.content}</span>
-                        </div>`
-                    ).join('');
-                }
+                commentsList.innerHTML = comments.length > 0
+                    ? comments.map(c => `<div class="comment">${c.text}</div>`).join('')
+                    : "<div class='comment'>Sin comentarios.</div>";
+                commentsView.classList.remove('hidden');
             })
-            .catch(() => {
-                commentsList.innerHTML = '<div>Error al cargar comentarios.</div>';
+            .catch(error => {
+                commentsList.innerHTML = "<div class='comment'>Error cargando comentarios.</div>";
+                commentsView.classList.remove('hidden');
             });
     });
 
-    // Cerrar comentarios
-    closeCommentsBtn.addEventListener('click', () => {
+    // 5. Cerrar comentarios
+    closeCommentsBtn.addEventListener('click', function() {
         commentsView.classList.add('hidden');
     });
 
-    // Opcional: cerrar el detalle al hacer click fuera
-    window.addEventListener('click', (e) => {
-        if (e.target === detailView) {
-            detailView.classList.add('hidden');
-        }
-        if (e.target === commentsView) {
-            commentsView.classList.add('hidden');
-        }
+    // 6. Agregar comentario
+    addCommentForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const movieId = showCommentsBtn.getAttribute('data-id');
+        const commentText = commentInput.value.trim();
+        if (!commentText) return;
+
+        fetch(`/api/movies/${movieId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: commentText }) // usa 'text'
+        })
+        .then(response => response.json())
+        .then(newComment => {
+            // Recarga los comentarios
+            showCommentsBtn.click();
+            commentInput.value = '';
+        });
     });
 });
