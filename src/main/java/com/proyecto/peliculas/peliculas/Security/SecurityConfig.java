@@ -13,19 +13,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
                 .requestMatchers(
-                    "/static/**",
-                    "/index.html",
-                    "/",
-                    "/*.css",
-                    "/*.js",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/favicon.ico"
-                ).permitAll()
-                .requestMatchers("/api/movies/**", "/api/mangas", "/api/mangas/**").permitAll()
-        )
-        .csrf(csrf -> csrf.disable());
+                        "/static/**",
+                        "/index.html",
+                        "/",
+                        "/*.css",
+                        "/*.js",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/favicon.ico")
+                .permitAll()
+                .requestMatchers("/api/movies/**", "/api/mangas", "/api/mangas/**", "/api/movies/bulk").permitAll())
+                .csrf(csrf -> csrf.disable());
         return http.build();
     }
 

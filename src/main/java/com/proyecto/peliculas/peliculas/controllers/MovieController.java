@@ -80,6 +80,7 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
+    @CrossOrigin
     @PostMapping("/bulk")
     public ResponseEntity<List<Movie>> addMovies(@RequestBody List<Movie> movies) {
         List<Movie> savedMovies = movieService.addMovies(movies);
